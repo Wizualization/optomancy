@@ -1,3 +1,9 @@
+/**TODO: 
+ * Instead of the box interactions, we want to trigger this when the user
+ * is trying to record an event and log their gestures as a command.
+ * Also, remove the box now that we've confirmed it works with our config.
+ */
+
 import * as THREE from 'three';
 import React, { useEffect, useRef, useState } from 'react';
 import { RoundedBox, Sphere, Text } from '@react-three/drei';

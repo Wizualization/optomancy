@@ -127,7 +127,9 @@ function Pinchable({ children }: any) {
     
     frame++
 
-    //have to do it by individual finger
+    //have to do it by individual finger?
+    //at some point we can probs just push those positions to a websocket instead.
+    //then we can just loop.
     if(thumb){
       setCurveThum(new CatmullRomCurve3([...curveThum.points, thumb.position], false, 'catmullrom', 0.25))
     }

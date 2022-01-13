@@ -4,12 +4,14 @@ import { Sky } from '@react-three/drei/core/Sky'
 import ReactDOM from 'react-dom'
 import React from 'react'
 import { VRCanvas, Hands, DefaultXRControllers } from '@react-three/xr'
+import Dictaphone from './Components/Verbal/SpeechToText.js'
 import './App.css';
 import Pinchable from './Components/Somatic/MageHand';
 
 // Not sure why other joint pos demo breaks, but https://codesandbox.io/s/47vqp?file=/src/App.tsx works.
 function App() {
   return (
+    <div>
     <VRCanvas>
       <Pinchable />
       <Hands />
@@ -19,6 +21,8 @@ function App() {
       <color args={['black']} attach="background" />
       {/* <Sky sunPosition={[500, 500, 500]} /> */}
     </VRCanvas>
+    <Dictaphone />
+    </div>
   );
 }
 

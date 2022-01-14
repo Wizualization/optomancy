@@ -14,7 +14,8 @@ const Dictaphone = () => {
   }
 
   const listenContinuously = () => SpeechRecognition.startListening({
-    continuous: true
+    continuous: true, 
+    language: "en-US"
   })
 
   return (
@@ -26,5 +27,36 @@ const Dictaphone = () => {
       <p>{transcript}</p>      
     </div>
   );
+
+
+/*
+//let SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition
+//let SpeechGrammarList = window.SpeechGrammarList || window.webkitSpeechGrammarList
+let SpeechRecognition = new window.webkitSpeechRecognition()
+let Grammar = new window.webkitSpeechGrammarList();
+
+SpeechRecognition.grammars = Grammar;
+
+console.log(SpeechRecognition)
+SpeechRecognition.onresult = function(event) {
+  console.log('click')
+  for(var word in event.results[0].transcript){
+    console.log('Word: ' + word);
+  }
+}
+SpeechRecognition.onerror = function(error){
+  console.log(error)
+}
+
+SpeechRecognition.onstart = function(){
+  console.log('starting')
+}
+
+return (
+  <div>
+    <button onClick={SpeechRecognition.start}>Start</button>
+    <button onClick={SpeechRecognition.stop}>Stop</button>
+  </div>
+);*/
 };
 export default Dictaphone;

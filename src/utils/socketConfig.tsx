@@ -1,5 +1,5 @@
 import { w3cwebsocket as WebSocketClient } from "websocket";
-let SOCKET_ADDRESS = 'ws://127.0.0.127:8000'
+let SOCKET_ADDRESS = 'ws://localhost:8000'
 const socket = new WebSocketClient(SOCKET_ADDRESS, 'echo-protocol');
 /*
 import { client as WebSocketClient } from "websocket";

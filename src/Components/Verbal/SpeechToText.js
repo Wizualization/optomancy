@@ -1,5 +1,6 @@
 import React from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
+import client from '../../utils/socketConfig';
 
 const Dictaphone = () => {
   const {
@@ -18,11 +19,16 @@ const Dictaphone = () => {
     language: "en-US"
   })
 
+  const endListener = () => {
+    client.send(transcript)
+    SpeechRecognition.stopListening();
+  }
+
   return (
     <div>
       <p>Microphone: {listening ? 'on' : 'off'}</p>
       <button onClick={listenContinuously}>Start</button>
-      <button onClick={SpeechRecognition.stopListening}>Stop</button>
+      <button onClick={endListener}>Stop</button>
       <button onClick={resetTranscript}>Reset</button>
       <p>{transcript}</p>      
     </div>

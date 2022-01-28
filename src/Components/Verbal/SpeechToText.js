@@ -1,6 +1,6 @@
 import React from 'react';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import client from '../../utils/socketConfig';
+//import client from '../../utils/socketConfig';
 
 const Dictaphone = () => {
   const {
@@ -20,7 +20,8 @@ const Dictaphone = () => {
   })
 
   const endListener = () => {
-    client.send(transcript)
+    //client.send(transcript)
+    // replace this with socketio listener
     SpeechRecognition.stopListening();
   }
 

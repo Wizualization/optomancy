@@ -2,22 +2,26 @@
 import { OrbitControls } from '@react-three/drei/core/OrbitControls'
 import { Sky } from '@react-three/drei/core/Sky'
 import ReactDOM from 'react-dom'
-import React, { Component } from 'react'
+import React, { Component, useEffect, useReducer } from 'react'
 import { VRCanvas, Hands, DefaultXRControllers } from '@react-three/xr'
 import Dictaphone from './Components/Verbal/SpeechToText.js'
 import './App.css';
 import Pinchable from './Components/Somatic/MageHand';
-import client from './utils/socketConfig';
+//import client from './utils/socketConfig';
+
+
+import { reducer, initialState, DispatchContext } from './utils/Reducer';
+import { socket, setupSocketEvents } from './utils/Socket';
 
 // Hololens user agent is going to be a version of edge above the latest release
 let ua = navigator.userAgent.toLowerCase();
 console.log(ua)
 let isHL = ua.replace('edg', '').length < ua.length;
 
-
-  
+ 
 
 // Not sure why other joint pos demo breaks, but https://codesandbox.io/s/47vqp?file=/src/App.tsx works.
+/*
 class App extends Component {
 
   componentWillMount() {
@@ -28,8 +32,26 @@ class App extends Component {
       console.log(message);
     };
   }
-  
-  render() {
+*/
+  export default function App(){
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const files = Object.keys(state.workspaces).map(key=>{
+    let fn_arr = state.workspaces[key]?.filename.split('.')
+    return {
+      content:state.workspaces[key]?.filecontents, 
+      extension:'.'+fn_arr[(fn_arr.length-1)]
+    };
+  })
+
+    // cdm
+  useEffect(() => {
+    // Set up socketio here
+    setupSocketEvents(dispatch);
+  }, []);
+
+
+  //render() {
 
     return (
       <div>
@@ -47,7 +69,7 @@ class App extends Component {
       }
       </div>
     );
-  }
+  //}
 }
 
-export default App;
+//export default App;

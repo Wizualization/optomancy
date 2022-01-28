@@ -12,9 +12,9 @@ module.exports = function(app: any) {
   );
 
   app.use(
-    createProxyMiddleware('/ws', 
+    createProxyMiddleware('/ws',
       {
-        target: 'http://73.213.79.81:8080',
+        target: 'http://192.168.20.127:8440',
         changeOrigin: true,
         ws: true,
     })

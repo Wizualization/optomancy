@@ -1,4 +1,4 @@
-``// reducer.ts
+// reducer.ts
 import { State, Action } from '../Types';
 import actions, { actionTypes } from '../Actions';
 

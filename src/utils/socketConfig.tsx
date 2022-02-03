@@ -1,13 +1,27 @@
 import { w3cwebsocket as WebSocketClient } from "websocket";
-let SOCKET_ADDRESS = 'wss://127.0.0.1:8443'
+//import { client as WebSocketClient } from "websocket";
+const host = window.location.hostname;
+//const host = '94.9.121.39';
+//const host = 'api.simbroadcasts.tv'
+
+//check if port 
+const port = window.location.port;
+//let port = "3000";
+
+console.log(process.env.NODE_ENV)
+
+const view = window.location.pathname;
+const room = new URLSearchParams(window.location.search).get('room') ||'default';
+const endpoint = port === "" ? `${host}/ws` : `${host}:${port}/ws`
+
+//let SOCKET_ADDRESS = 'wss://optomancy.com/ws'
+let SOCKET_ADDRESS = 'wss://'+endpoint;
 const socket = new WebSocketClient(SOCKET_ADDRESS, 'echo-protocol');
-/*
-import { client as WebSocketClient } from "websocket";
 
-const socket = new WebSocketClient();
+//const socket = new WebSocketClient();
 
-socket.connect('ws://127.0.0.1:8000', 'echo-protocol');
-*/
+//socket.connect('wss://127.0.0.1:8000', 'echo-protocol');
+
 export default socket;
 
 /*

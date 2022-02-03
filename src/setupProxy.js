@@ -1,7 +1,7 @@
-import * as express from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+//import * as express from 'express';
+const { createProxyMiddleware }= require('http-proxy-middleware');
 
-module.exports = function(app: any) {
+module.exports = function(app) {
   app.use(
     createProxyMiddleware('/api',
     {
@@ -14,7 +14,7 @@ module.exports = function(app: any) {
   app.use(
     createProxyMiddleware('/ws',
       {
-        target: 'http://192.168.20.127:8440',
+        target: 'https://optomancy.io',
         changeOrigin: true,
         ws: true,
     })

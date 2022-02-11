@@ -1,3 +1,4 @@
+/*
 import { w3cwebsocket as WebSocketClient } from "websocket";
 //import { client as WebSocketClient } from "websocket";
 const host = window.location.hostname;
@@ -21,7 +22,8 @@ const socket = new WebSocketClient(SOCKET_ADDRESS, 'echo-protocol');
 //const socket = new WebSocketClient();
 
 //socket.connect('wss://127.0.0.1:8000', 'echo-protocol');
-
+*/
+const socket = {}
 export default socket;
 
 /*

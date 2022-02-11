@@ -18,9 +18,12 @@ const endpoint = port === "" ? `${host}/ws` : `${host}:${port}/ws`
 //const socket = io(`http://${host}:8080`, { query: { view, room }});
 // use port for testing
 /// this is what we were using before 
-const socket = io(`https://optomancy.com`,  {
+/*const socket = io(`https://optomancy.com`,  {
   query: { view, room },
   path: '/ws/'  
+});*/
+const socket = io(`https://optomancy.io`,  {
+  query: { view, room }
 });
 //console.log(endpoint)
 //const socket = io(`https://${endpoint}`, { query: { view, room }});

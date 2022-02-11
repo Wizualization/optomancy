@@ -2,7 +2,7 @@
 const { createProxyMiddleware }= require('http-proxy-middleware');
 
 module.exports = function(app) {
-  app.use(
+/*  app.use(
     createProxyMiddleware('/api',
     {
       target: 'https://api.simbroadcasts.tv',
@@ -14,9 +14,10 @@ module.exports = function(app) {
   app.use(
     createProxyMiddleware('/ws',
       {
-        target: 'https://optomancy.io',
+        target: 'http://optomancy.io',
         changeOrigin: true,
         ws: true,
     })
   );
+  */
 }

@@ -7,12 +7,12 @@ import { VRCanvas, Hands, DefaultXRControllers } from '@react-three/xr'
 import Dictaphone from './Components/Verbal/SpeechToText.js'
 import './App.css';
 import Pinchable from './Components/Somatic/MageHand';
+import Interpreter from './SpellCasting/Interpreter';
 //import client from './utils/socketConfig';
 
 
 import { reducer, initialState, DispatchContext } from './utils/Reducer';
 import { socket, setupSocketEvents } from './utils/Socket';
-
 // Hololens user agent is going to be a version of edge above the latest release
 let ua = navigator.userAgent.toLowerCase();
 console.log(ua)
@@ -36,11 +36,12 @@ class App extends Component {
   export default function App(){
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const files = Object.keys(state.workspaces).map(key=>{
-    let fn_arr = state.workspaces[key]?.filename.split('.')
+  const grimoire = Object.keys(state.spells).map(key=>{
+    //let fn_arr = state.spells[key]?.spellname.split('.')
     return {
-      content:state.workspaces[key]?.filecontents, 
-      extension:'.'+fn_arr[(fn_arr.length-1)]
+      gesture:state.spells[key]?.gesture, 
+      //words:'.'+fn_arr[(fn_arr.length-1)]
+      words:state.spells[key]?.words
     };
   })
 
@@ -54,6 +55,7 @@ class App extends Component {
   //render() {
 
     return (
+      <DispatchContext.Provider value={dispatch}>
       <div>
       {isHL ? 
           <VRCanvas>
@@ -61,6 +63,13 @@ class App extends Component {
           <Hands />
           <OrbitControls />
           <ambientLight />
+          {
+          grimoire.map((spell, index) => {
+              //console.log(file);
+              return (
+                <Interpreter key={index.toString()} gesture={spell.gesture} words={spell.words}/>
+                )})
+          }
           <pointLight position={[1, 1, 1]} />
           <color args={['black']} attach="background" />
           {/* <Sky sunPosition={[500, 500, 500]} /> */}
@@ -68,6 +77,7 @@ class App extends Component {
         : <Dictaphone />
       }
       </div>
+      </DispatchContext.Provider>
     );
   //}
 }

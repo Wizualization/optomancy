@@ -4,7 +4,7 @@ import { State } from '../Types'
   
   const initialState: State = {
     test: 'test',
-    workspaces: {}
+    spells: {}
   };
   
   export default initialState;

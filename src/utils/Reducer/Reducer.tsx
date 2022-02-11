@@ -10,8 +10,8 @@ const reducer = (state: State, action: Action) => {
     case actionTypes.IO_CONNECTED:
       return actions.ioConnected(state);
 
-    case actionTypes.WORKSPACE_UPDATE:
-      return actions.workspaceUpdate(state, action);
+    case actionTypes.SPELL_UPDATE:
+      return actions.spellUpdate(state, action);
       // case socketEventTypes.IO_CONNECT_ERROR:
     //   return actions.ioConnectError(state);
     // case socketEventTypes.IO_CLOSE:

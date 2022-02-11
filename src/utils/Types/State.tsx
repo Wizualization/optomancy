@@ -1,7 +1,7 @@
 // State.ts
 type State = {
     test: string;
-    workspaces: any;
+    spells: any;
   };
   
   export default State;

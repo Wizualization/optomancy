@@ -3,7 +3,7 @@ function Interpreter(props:any) {
       //useFrame((state) => {      })
   
       return (
-        <ambientLight />
+        <p>{props.gesture +' '+ props.words}</p>
       )
   }
   

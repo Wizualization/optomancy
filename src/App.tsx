@@ -63,19 +63,20 @@ class App extends Component {
           <Hands />
           <OrbitControls />
           <ambientLight />
-          {
-          grimoire.map((spell, index) => {
-              //console.log(file);
-              return (
-                <Interpreter key={index.toString()} gesture={spell.gesture} words={spell.words}/>
-                )})
-          }
           <pointLight position={[1, 1, 1]} />
           <color args={['black']} attach="background" />
           {/* <Sky sunPosition={[500, 500, 500]} /> */}
         </VRCanvas>
         : <Dictaphone />
       }
+        {
+          grimoire.map((spell, index) => {
+              //console.log(file);
+              return (
+                <Interpreter key={index.toString()} gesture={spell.gesture} words={spell.words}/>
+                )})
+        }
+
       </div>
       </DispatchContext.Provider>
     );

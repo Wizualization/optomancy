@@ -11,6 +11,7 @@ import { RoundedBox, Sphere, Text, CurveModifier } from '@react-three/drei';
 import { extend, reconciler, useFrame, useThree } from '@react-three/fiber';
 import { BufferGeometry, CatmullRomCurve3, Line, Material, Mesh, MeshBasicMaterial, MeshPhongMaterial, SplineCurve, Vector3 } from 'three';
 import { useSpring, config } from 'react-spring';
+import {socket} from '../../utils/Socket';
 
 const start = new Vector3(-0.25, 1.0, -0.3)
 const end = new Vector3(0.25, 1.0, -0.3)
@@ -125,6 +126,14 @@ function Pinchable({ children }: any) {
 
     let pinching = false
     
+    socket.emit('spellcast', JSON.stringify({
+      thumb: thumb, 
+      index: index, 
+      middle: ring, 
+      ring: ring, 
+      pinky: pinky
+    }));
+
     frame++
 
     //have to do it by individual finger?

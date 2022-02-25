@@ -31,6 +31,7 @@ let velocity = new Vector3(0, 0, 0)
 let targetPos = getTargetPos(new Vector3(0, 0, 0))
 
 let frame = 0
+let prev_frame = 0
 
 function Pinchable({ children }: any) {
   const jointNames = [
@@ -101,7 +102,8 @@ function Pinchable({ children }: any) {
   const curve = new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end, 0.5), end], false, 'catmullrom', 0.25)
   
   const { gl } = useThree()
-  const hand = gl.xr.getHand(1) as any
+  const hand0 = gl.xr.getHand(0) as any
+  const hand1 = gl.xr.getHand(1) as any
   const ref = useRef<Mesh | null>(null)
   const v = new Vector3()
   const [label, setLabel] = useState(0)
@@ -116,59 +118,76 @@ function Pinchable({ children }: any) {
     if (!ref.current) return
 
     const handle = ref.current as any
-    const thumb = hand.joints['thumb-tip']
-    const index = hand.joints['index-finger-tip']
-    
     //actually need to do it this way
-    const middle = hand.joints['middle-tip']
-    const ring = hand.joints['ring-tip']
-    const pinky = hand.joints['pinky-tip']
+    const thumb0 = hand0.joints['thumb-tip']
+    const index0 = hand0.joints['index-finger-tip']
+    const middle0 = hand0.joints['middle-tip']
+    const ring0 = hand0.joints['ring-tip']
+    const pinky0 = hand0.joints['pinky-tip']
+
+    const thumb1 = hand1.joints['thumb-tip']
+    const index1 = hand1.joints['index-finger-tip']
+    const middle1 = hand1.joints['middle-tip']
+    const ring1 = hand1.joints['ring-tip']
+    const pinky1 = hand1.joints['pinky-tip']
+
+
 
     let pinching = false
-    
-    socket.emit('spellcast', JSON.stringify({
-      thumb: thumb, 
-      index: index, 
-      middle: ring, 
-      ring: ring, 
-      pinky: pinky
-    }));
+
+    if(prev_frame < frame - 5){
+      socket.emit('spellcast', JSON.stringify({
+        thumb0: thumb0, 
+        index0: index0, 
+        middle0: middle0, 
+        ring0: ring0, 
+        pinky0: pinky0,
+        thumb1: thumb1, 
+        index1: index1, 
+        middle1: middle1, 
+        ring1: ring1, 
+        pinky1: pinky1
+  
+      }));
+      prev_frame = frame;
+    }
 
     frame++
 
     //have to do it by individual finger?
     //at some point we can probs just push those positions to a websocket instead.
     //then we can just loop.
-    if(thumb){
-      setCurveThum(new CatmullRomCurve3([...curveThum.points, thumb.position], false, 'catmullrom', 0.25))
+    /*
+    if(thumb0){
+      setCurveThum(new CatmullRomCurve3([...curveThum.points, thumb0.position], false, 'catmullrom', 0.25))
     }
-    if(index){
-      setCurveIndx(new CatmullRomCurve3([...curveIndx.points, index.position], false, 'catmullrom', 0.25))
+    if(index0){
+      setCurveIndx(new CatmullRomCurve3([...curveIndx.points, index0.position], false, 'catmullrom', 0.25))
     }
-    if(middle){
-      setCurveMidl(new CatmullRomCurve3([...curveMidl.points, middle.position], false, 'catmullrom', 0.25))
+    if(middle0){
+      setCurveMidl(new CatmullRomCurve3([...curveMidl.points, middle0.position], false, 'catmullrom', 0.25))
     }
-    if(ring){
-      setCurveRing(new CatmullRomCurve3([...curveRing.points, ring.position], false, 'catmullrom', 0.25))
+    if(ring0){
+      setCurveRing(new CatmullRomCurve3([...curveRing.points, ring0.position], false, 'catmullrom', 0.25))
     }
-    if(pinky){
-      setCurvePink(new CatmullRomCurve3([...curvePink.points, pinky.position], false, 'catmullrom', 0.25))
+    if(pinky0){
+      setCurvePink(new CatmullRomCurve3([...curvePink.points, pinky0.position], false, 'catmullrom', 0.25))
     }
-
+  */
 
     /*
     for(let jointName in justTheTips){
-      const thisJoint = hand.joints[jointName];
+      const thisJoint = hand0.joints[jointName];
       if (thisJoint){
         tipCurves[jointName].points.append(thisJoint.position);
       }
     }
     */
 
-    if (index && thumb) {
-      const pinch = Math.max(0, 1 - index.position.distanceTo(thumb.position) / 0.1)
+    if (index0 && thumb0) {
+      const pinch = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1)
       pinching = pinch > 0.82
-      const pointer = v.lerpVectors(index.position, thumb.position, 0.5)
+      const pointer = v.lerpVectors(index0.position, thumb0.position, 0.5)
       const distance = pointer.distanceTo(handle.position)
 
       const tDistance = 0.2

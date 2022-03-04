@@ -1,6 +1,6 @@
 /**TODO: 
  * Instead of the box interactions, we want to trigger this when the user
- * is trying to record an event and log their gestures as a command.
+ * is trying to craft an event and log their gestures as a command.
  * Also, remove the box now that we've confirmed it works with our config.
  * See https://immersive-web.github.io/webxr-hand-input/#skeleton-joints for joint refs
  */
@@ -25,7 +25,12 @@ const curve = new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end,
 
 const offset = new Vector3()
 
-let prevPinching = false
+let crafting = false;
+let crafting_startTime = Date.now();
+let prev_craftPinching = false
+
+let casting = false;
+let prev_castPinching = false
 
 let velocity = new Vector3(0, 0, 0)
 let targetPos = getTargetPos(new Vector3(0, 0, 0))
@@ -133,9 +138,10 @@ function Pinchable({ children }: any) {
 
 
 
-    let pinching = false
+    let craftPinching = false
+    let castPinching = false
 
-    if(prev_frame < frame - 5){
+    if(prev_frame < frame - 5 && crafting){
       socket.emit('spellcast', JSON.stringify({
         thumb0: thumb0, 
         index0: index0, 
@@ -150,6 +156,12 @@ function Pinchable({ children }: any) {
   
       }));
       prev_frame = frame;
+
+      //stop crafting if it has been more than 5 seconds
+      if(Date.now() > (crafting_startTime + 5000)){
+        crafting = false;
+      }
+
     }
 
     frame++
@@ -185,39 +197,46 @@ function Pinchable({ children }: any) {
     */
 
     if (index0 && thumb0) {
-      const pinch = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1)
-      pinching = pinch > 0.82
+      const craftPinch = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1)
+      craftPinching = craftPinch > 0.82
+      //we set crafting to true, but we do not require pinch to continue crafting
+      if(craftPinching && !crafting){
+        crafting = true;
+        crafting_startTime = Date.now();
+      }
+      /*
       const pointer = v.lerpVectors(index0.position, thumb0.position, 0.5)
       const distance = pointer.distanceTo(handle.position)
 
       const tDistance = 0.2
       if (distance < tDistance) {
-        let scale = 1 + (0.8 - pinch) * 0.4 * (1 - distance / tDistance)
+        let scale = 1 + (0.8 - craftPinch) * 0.4 * (1 - distance / tDistance)
         handle.scale.set(scale, scale, scale)
       }
 
-      handle.material.color.set(pinching ? 'hotpink' : 'white');
+      handle.material.color.set(craftPinching ? 'hotpink' : 'white');
         
       // Save offset when starting to ping
-      if (pinching && !prevPinching) {
+      if (craftPinching && !prev_craftPinching) {
         offset.copy(pointer).sub(handle.position)
       }
 
       // Move pointer to the hand
-      if (pinching) {
+      if (craftPinching) {
         handle.position.copy(pointer).sub(offset)
         curve.points[1].copy(handle.position)
       }
+      */
     }
 
     // Released
-    if (prevPinching && !pinching) {
+    if (prev_craftPinching && !craftPinching) {
       velocity.set(0, 0, 0)
       targetPos.copy(getTargetPos(handle.position))
     }
 
     // return to the position
-    if (!pinching) {
+    if (!craftPinching) {
       const direction = new Vector3().copy(targetPos).sub(handle.position)
       velocity.add(direction.multiplyScalar(0.05))
       velocity.multiplyScalar(0.92)
@@ -233,7 +252,7 @@ function Pinchable({ children }: any) {
       setLabel(value)
     }
 
-    prevPinching = pinching
+    prev_craftPinching = craftPinching
   })
 
   return (

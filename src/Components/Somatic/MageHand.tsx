@@ -12,6 +12,7 @@ import { extend, reconciler, useFrame, useThree } from '@react-three/fiber';
 import { BufferGeometry, CatmullRomCurve3, Line, Material, Mesh, MeshBasicMaterial, MeshPhongMaterial, SplineCurve, Vector3 } from 'three';
 import { useSpring, config } from 'react-spring';
 import {socket} from '../../utils/Socket';
+import ComputeDTW from './GestureRecognition';
 
 const start = new Vector3(-0.25, 1.0, -0.3)
 const end = new Vector3(0.25, 1.0, -0.3)
@@ -20,6 +21,10 @@ const startEnd = new Vector3().copy(end).sub(start)
 function getTargetPos(handle: Vector3) {
   return new Vector3().copy(handle).sub(start).projectOnVector(startEnd).add(start)
 }
+
+//for now we will just store these for a given session but we NEED TO CONNECT TO SERVER DB
+let crafted_spells:any[] = [];
+let last_craft:any[] = [];
 
 const curve = new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end, 0.5), end], false, 'catmullrom', 0.25)
 
@@ -30,7 +35,10 @@ let crafting_startTime = Date.now();
 let prev_craftPinching = false
 
 let casting = false;
+let casting_startTime = Date.now();
 let prev_castPinching = false
+
+let last_cast:any[] = []
 
 let velocity = new Vector3(0, 0, 0)
 let targetPos = getTargetPos(new Vector3(0, 0, 0))
@@ -142,6 +150,20 @@ function Pinchable({ children }: any) {
     let castPinching = false
 
     if(prev_frame < frame - 5 && crafting){
+
+      last_craft.push({
+        thumb0: thumb0, 
+        index0: index0, 
+        middle0: middle0, 
+        ring0: ring0, 
+        pinky0: pinky0,
+        thumb1: thumb1, 
+        index1: index1, 
+        middle1: middle1, 
+        ring1: ring1, 
+        pinky1: pinky1
+      })
+
       socket.emit('spellcast', JSON.stringify({
         thumb0: thumb0, 
         index0: index0, 
@@ -153,13 +175,44 @@ function Pinchable({ children }: any) {
         middle1: middle1, 
         ring1: ring1, 
         pinky1: pinky1
-  
       }));
       prev_frame = frame;
 
       //stop crafting if it has been more than 5 seconds
       if(Date.now() > (crafting_startTime + 5000)){
+        crafted_spells.push(last_craft);
         crafting = false;
+      }
+
+    }
+
+    if(prev_frame < frame - 5 && casting){
+
+      last_cast.push({
+        thumb0: thumb0, 
+        index0: index0, 
+        middle0: middle0, 
+        ring0: ring0, 
+        pinky0: pinky0,
+        thumb1: thumb1, 
+        index1: index1, 
+        middle1: middle1, 
+        ring1: ring1, 
+        pinky1: pinky1
+      })
+
+      prev_frame = frame;
+
+      //stop casting if it has been more than 5 seconds
+      if(Date.now() > (casting_startTime + 5000)){
+
+        if(crafted_spells.length > 0){
+          for(let crafted_spell in crafted_spells){
+            ComputeDTW(last_cast, JSON.parse(crafted_spell))
+          }
+        }
+
+        casting = false;
       }
 
     }
@@ -200,8 +253,9 @@ function Pinchable({ children }: any) {
       const craftPinch = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1)
       craftPinching = craftPinch > 0.82
       //we set crafting to true, but we do not require pinch to continue crafting
-      if(craftPinching && !crafting){
+      if(craftPinching && !crafting && !casting){
         crafting = true;
+        last_craft = [];
         crafting_startTime = Date.now();
       }
       /*
@@ -242,6 +296,20 @@ function Pinchable({ children }: any) {
       velocity.multiplyScalar(0.92)
       handle.position.add(velocity)
     }
+
+  //spell casting commands
+  if (index1 && thumb1) {
+    const castPinch = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1)
+    castPinching = castPinch > 0.82
+    //we set casting to true, but we do not require pinch to continue casting
+    if(castPinching && !casting && !crafting){
+      last_cast = [];
+      casting = true;
+      casting_startTime = Date.now();
+    }
+  }
+
+
 
     // Update line
     curve.points[1].copy(handle.position)

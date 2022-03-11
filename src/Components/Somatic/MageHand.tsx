@@ -134,34 +134,36 @@ function Pinchable({ children }: any) {
     //actually need to do it this way
     const thumb0 = hand0.joints['thumb-tip']
     const index0 = hand0.joints['index-finger-tip']
-    const middle0 = hand0.joints['middle-tip']
-    const ring0 = hand0.joints['ring-tip']
-    const pinky0 = hand0.joints['pinky-tip']
+    const middle0 = hand0.joints['middle-finger-tip']
+    const ring0 = hand0.joints['ring-finger-tip']
+    const pinky0 = hand0.joints['pinky-finger-tip']
 
     const thumb1 = hand1.joints['thumb-tip']
     const index1 = hand1.joints['index-finger-tip']
-    const middle1 = hand1.joints['middle-tip']
-    const ring1 = hand1.joints['ring-tip']
-    const pinky1 = hand1.joints['pinky-tip']
+    const middle1 = hand1.joints['middle-finger-tip']
+    const ring1 = hand1.joints['ring-finger-tip']
+    const pinky1 = hand1.joints['pinky-finger-tip']
 
 
 
     let craftPinching = false
     let castPinching = false
 
+    //for now we substitute this empty vector... why bc why not
+    let dummyVec = new THREE.Vector3(1,1,1);
     if(prev_frame < frame - 5 && crafting){
 
       last_craft.push({
-        thumb0: thumb0, 
-        index0: index0, 
-        middle0: middle0, 
-        ring0: ring0, 
-        pinky0: pinky0,
-        thumb1: thumb1, 
-        index1: index1, 
-        middle1: middle1, 
-        ring1: ring1, 
-        pinky1: pinky1
+        thumb0: thumb0 ? {...thumb0.position} : dummyVec, 
+        index0: index0 ? {...index0.position} : dummyVec, 
+        middle0: middle0 ? {...middle0.position} : dummyVec, 
+        ring0: ring0 ? {...ring0.position} : dummyVec, 
+        pinky0: pinky0 ? {...pinky0.position} : dummyVec,
+        thumb1: thumb1 ? {...thumb1.position} : dummyVec, 
+        index1: index1 ? {...index1.position} : dummyVec, 
+        middle1: middle1 ? {...middle1.position} : dummyVec, 
+        ring1: ring1 ? {...ring1.position} : dummyVec, 
+        pinky1: pinky1 ? {...pinky1.position} : dummyVec
       })
 
       socket.emit('spellcast', JSON.stringify({
@@ -189,16 +191,16 @@ function Pinchable({ children }: any) {
     if(prev_frame < frame - 5 && casting){
 
       last_cast.push({
-        thumb0: thumb0, 
-        index0: index0, 
-        middle0: middle0, 
-        ring0: ring0, 
-        pinky0: pinky0,
-        thumb1: thumb1, 
-        index1: index1, 
-        middle1: middle1, 
-        ring1: ring1, 
-        pinky1: pinky1
+        thumb0: thumb0 ? {...thumb0.position} : dummyVec, 
+        index0: index0 ? {...index0.position} : dummyVec, 
+        middle0: middle0 ? {...middle0.position} : dummyVec, 
+        ring0: ring0 ? {...ring0.position} : dummyVec, 
+        pinky0: pinky0 ? {...pinky0.position} : dummyVec,
+        thumb1: thumb1 ? {...thumb1.position} : dummyVec, 
+        index1: index1 ? {...index1.position} : dummyVec, 
+        middle1: middle1 ? {...middle1.position} : dummyVec, 
+        ring1: ring1 ? {...ring1.position} : dummyVec, 
+        pinky1: pinky1 ? {...pinky1.position} : dummyVec
       })
 
       prev_frame = frame;
@@ -207,9 +209,11 @@ function Pinchable({ children }: any) {
       if(Date.now() > (casting_startTime + 5000)){
 
         if(crafted_spells.length > 0){
-          for(let crafted_spell in crafted_spells){
-            ComputeDTW(last_cast, JSON.parse(crafted_spell))
+          let spell_dtws:any = []
+          for (var i = 0; i < crafted_spells.length; i++) {
+            spell_dtws.push(ComputeDTW(last_cast, crafted_spells[i]))
           }
+          console.log(spell_dtws);
         }
 
         casting = false;
@@ -244,7 +248,7 @@ function Pinchable({ children }: any) {
     for(let jointName in justTheTips){
       const thisJoint = hand0.joints[jointName];
       if (thisJoint){
-        tipCurves[jointName].points.append(thisJoint.position);
+        tipCurves[jointName].points.push(thisJoint.position);
       }
     }
     */
@@ -254,6 +258,7 @@ function Pinchable({ children }: any) {
       craftPinching = craftPinch > 0.82
       //we set crafting to true, but we do not require pinch to continue crafting
       if(craftPinching && !crafting && !casting){
+        console.log('crafting spell...')
         crafting = true;
         last_craft = [];
         crafting_startTime = Date.now();
@@ -299,10 +304,11 @@ function Pinchable({ children }: any) {
 
   //spell casting commands
   if (index1 && thumb1) {
-    const castPinch = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1)
+    const castPinch = Math.max(0, 1 - index1.position.distanceTo(thumb1.position) / 0.1)
     castPinching = castPinch > 0.82
     //we set casting to true, but we do not require pinch to continue casting
     if(castPinching && !casting && !crafting){
+      console.log('casting spell...')
       last_cast = [];
       casting = true;
       casting_startTime = Date.now();

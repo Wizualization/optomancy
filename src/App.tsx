@@ -71,7 +71,7 @@ class App extends Component {
       }
         {
           grimoire.map((spell, index) => {
-              //console.log(file);
+              console.log(spell);
               return (
                 <Interpreter key={index.toString()} gesture={spell.gesture} words={spell.words}/>
                 )})

@@ -22,7 +22,7 @@ const Dictaphone = () => {
 
   const endListener = () => {
     //client.send(transcript)
-    socket.emit('spellcast', transcript);
+    socket.emit('spellcast', JSON.stringify({'gesture': [], 'words': transcript}));
     // replace this with socketio listener
     SpeechRecognition.stopListening();
   }

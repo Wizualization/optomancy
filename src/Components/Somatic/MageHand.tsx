@@ -165,7 +165,8 @@ function Pinchable({ children }: any) {
         ring1: ring1 ? {...ring1.position} : dummyVec, 
         pinky1: pinky1 ? {...pinky1.position} : dummyVec
       })
-
+      //wait until finished casting to emit
+      /*
       socket.emit('spellcast', JSON.stringify({
         thumb0: thumb0, 
         index0: index0, 
@@ -178,11 +179,13 @@ function Pinchable({ children }: any) {
         ring1: ring1, 
         pinky1: pinky1
       }));
+      */
       prev_frame = frame;
 
       //stop crafting if it has been more than 5 seconds
       if(Date.now() > (crafting_startTime + 5000)){
         crafted_spells.push(last_craft);
+        socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':''}))
         crafting = false;
       }
 

@@ -21,6 +21,7 @@
     "@types/socket.io-client": "^3.0.0",
     "@types/three": "^0.135.0",
     "@types/websocket": "^1.0.4",
+    "canvas-sketch-util": "^1.10.0",
     "dynamic-time-warping": "^1.0.0",
     "express": "^4.17.2",
     "http-proxy-middleware": "^2.0.2",

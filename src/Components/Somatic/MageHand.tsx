@@ -13,6 +13,7 @@ import { BufferGeometry, CatmullRomCurve3, Line, Material, Mesh, MeshBasicMateri
 import { useSpring, config } from 'react-spring';
 import {socket} from '../../utils/Socket';
 import ComputeDTW from './GestureRecognition';
+import Swarm from '../../SpellCasting/Swarm'
 
 const start = new Vector3(-0.25, 1.0, -0.3)
 const end = new Vector3(0.25, 1.0, -0.3)
@@ -103,6 +104,7 @@ function Pinchable({ children }: any) {
   const [curveMidl, setCurveMidl] = useState(new CatmullRomCurve3([fingstart, fingstart], false, 'catmullrom', 0.25));
   const [curveRing, setCurveRing] = useState(new CatmullRomCurve3([fingstart, fingstart], false, 'catmullrom', 0.25));
   const [curvePink, setCurvePink] = useState(new CatmullRomCurve3([fingstart, fingstart], false, 'catmullrom', 0.25));
+  const [magicDustCount, setMagicDustCount] = useState(0);
   
   const curveRefThum = useRef()
   const curveRefIndx = useRef()
@@ -110,6 +112,7 @@ function Pinchable({ children }: any) {
   const curveRefRing = useRef()
   const curveRefPink = useRef()
   
+  const dustRef = useRef<Mesh | null>(null);
 
 
   const curve = new CatmullRomCurve3([start, new Vector3().lerpVectors(start, end, 0.5), end], false, 'catmullrom', 0.25)
@@ -125,10 +128,16 @@ function Pinchable({ children }: any) {
 
   useEffect(() => {
     if (!ref.current ) return
+    if (!dustRef.current ) return
+    if(dustRef.current){
+      dustRef.current.visible = false;
+    }
+
   }, [])
 
   useFrame(() => {
     if (!ref.current) return
+    if (!dustRef.current ) return
 
     const handle = ref.current as any
     //actually need to do it this way
@@ -152,76 +161,97 @@ function Pinchable({ children }: any) {
     //for now we substitute this empty vector... why bc why not
     let dummyVec = new THREE.Vector3(1,1,1);
     if(prev_frame < frame - 5 && crafting){
+      //start crafting if it has been more than 1 seconds
+      if(Date.now() > (crafting_startTime + 1000)){
+        //setMagicDustCount(5000);
+        if(dustRef.current){
+          dustRef.current.visible = true;
+        }
+    
+        last_craft.push({
+          thumb0: thumb0 ? {...thumb0.position} : dummyVec, 
+          index0: index0 ? {...index0.position} : dummyVec, 
+          middle0: middle0 ? {...middle0.position} : dummyVec, 
+          ring0: ring0 ? {...ring0.position} : dummyVec, 
+          pinky0: pinky0 ? {...pinky0.position} : dummyVec,
+          thumb1: thumb1 ? {...thumb1.position} : dummyVec, 
+          index1: index1 ? {...index1.position} : dummyVec, 
+          middle1: middle1 ? {...middle1.position} : dummyVec, 
+          ring1: ring1 ? {...ring1.position} : dummyVec, 
+          pinky1: pinky1 ? {...pinky1.position} : dummyVec
+        })
+        //wait until finished casting to emit
+        /*
+        socket.emit('spellcast', JSON.stringify({
+          thumb0: thumb0, 
+          index0: index0, 
+          middle0: middle0, 
+          ring0: ring0, 
+          pinky0: pinky0,
+          thumb1: thumb1, 
+          index1: index1, 
+          middle1: middle1, 
+          ring1: ring1, 
+          pinky1: pinky1
+        }));
+        */
+        prev_frame = frame;
 
-      last_craft.push({
-        thumb0: thumb0 ? {...thumb0.position} : dummyVec, 
-        index0: index0 ? {...index0.position} : dummyVec, 
-        middle0: middle0 ? {...middle0.position} : dummyVec, 
-        ring0: ring0 ? {...ring0.position} : dummyVec, 
-        pinky0: pinky0 ? {...pinky0.position} : dummyVec,
-        thumb1: thumb1 ? {...thumb1.position} : dummyVec, 
-        index1: index1 ? {...index1.position} : dummyVec, 
-        middle1: middle1 ? {...middle1.position} : dummyVec, 
-        ring1: ring1 ? {...ring1.position} : dummyVec, 
-        pinky1: pinky1 ? {...pinky1.position} : dummyVec
-      })
-      //wait until finished casting to emit
-      /*
-      socket.emit('spellcast', JSON.stringify({
-        thumb0: thumb0, 
-        index0: index0, 
-        middle0: middle0, 
-        ring0: ring0, 
-        pinky0: pinky0,
-        thumb1: thumb1, 
-        index1: index1, 
-        middle1: middle1, 
-        ring1: ring1, 
-        pinky1: pinky1
-      }));
-      */
-      prev_frame = frame;
-
-      //stop crafting if it has been more than 5 seconds
-      if(Date.now() > (crafting_startTime + 5000)){
-        crafted_spells.push(last_craft);
-        socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':''}))
-        crafting = false;
+        //stop crafting if it has been more than 5 seconds
+        if(Date.now() > (crafting_startTime + 5000)){
+          crafted_spells.push(last_craft);
+          //setMagicDustCount(0);
+          if(dustRef.current){
+            dustRef.current.visible = false;
+          }
+      
+          socket.emit('spellcast', JSON.stringify({'gesture':last_craft, 'words':''}))
+          crafting = false;
+        }
       }
-
     }
 
     if(prev_frame < frame - 5 && casting){
-
-      last_cast.push({
-        thumb0: thumb0 ? {...thumb0.position} : dummyVec, 
-        index0: index0 ? {...index0.position} : dummyVec, 
-        middle0: middle0 ? {...middle0.position} : dummyVec, 
-        ring0: ring0 ? {...ring0.position} : dummyVec, 
-        pinky0: pinky0 ? {...pinky0.position} : dummyVec,
-        thumb1: thumb1 ? {...thumb1.position} : dummyVec, 
-        index1: index1 ? {...index1.position} : dummyVec, 
-        middle1: middle1 ? {...middle1.position} : dummyVec, 
-        ring1: ring1 ? {...ring1.position} : dummyVec, 
-        pinky1: pinky1 ? {...pinky1.position} : dummyVec
-      })
-
-      prev_frame = frame;
-
-      //stop casting if it has been more than 5 seconds
-      if(Date.now() > (casting_startTime + 5000)){
-
-        if(crafted_spells.length > 0){
-          let spell_dtws:any = []
-          for (var i = 0; i < crafted_spells.length; i++) {
-            spell_dtws.push(ComputeDTW(last_cast, crafted_spells[i]))
-          }
-          console.log(spell_dtws);
+      //start casting if it has been more than 1 second
+      if(Date.now() > (casting_startTime + 1000)){
+        //setMagicDustCount(5000);
+        if(dustRef.current){
+          dustRef.current.visible = true;
         }
+    
+        last_cast.push({
+          thumb0: thumb0 ? {...thumb0.position} : dummyVec, 
+          index0: index0 ? {...index0.position} : dummyVec, 
+          middle0: middle0 ? {...middle0.position} : dummyVec, 
+          ring0: ring0 ? {...ring0.position} : dummyVec, 
+          pinky0: pinky0 ? {...pinky0.position} : dummyVec,
+          thumb1: thumb1 ? {...thumb1.position} : dummyVec, 
+          index1: index1 ? {...index1.position} : dummyVec, 
+          middle1: middle1 ? {...middle1.position} : dummyVec, 
+          ring1: ring1 ? {...ring1.position} : dummyVec, 
+          pinky1: pinky1 ? {...pinky1.position} : dummyVec
+        })
 
-        casting = false;
+        prev_frame = frame;
+
+        //stop casting if it has been more than 5 seconds
+        if(Date.now() > (casting_startTime + 5000)){
+          //setMagicDustCount(0);
+          if(dustRef.current){
+            dustRef.current.visible = false;
+          }
+      
+          if(crafted_spells.length > 0){
+            let spell_dtws:any = []
+            for (var i = 0; i < crafted_spells.length; i++) {
+              spell_dtws.push(ComputeDTW(last_cast, crafted_spells[i]))
+            }
+            console.log(spell_dtws);
+          }
+
+          casting = false;
+        }
       }
-
     }
 
     frame++
@@ -256,9 +286,12 @@ function Pinchable({ children }: any) {
     }
     */
 
-    if (index0 && thumb0) {
-      const craftPinch = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1)
-      craftPinching = craftPinch > 0.82
+    //Update: I switched from left & right pinch for craft vs cast, to using both hands to pinch for craft vs putting hands together to cast
+    if (index0 && thumb0 && index1 && thumb1) {
+      const craftPinch_left = Math.max(0, 1 - index0.position.distanceTo(thumb0.position) / 0.1)
+      craftPinching = craftPinch_left > 0.52
+      const craftPinch_right = Math.max(0, 1 - index1.position.distanceTo(thumb1.position) / 0.1)
+      craftPinching = craftPinching && (craftPinch_right > 0.52)
       //we set crafting to true, but we do not require pinch to continue crafting
       if(craftPinching && !crafting && !casting){
         console.log('crafting spell...')
@@ -289,7 +322,7 @@ function Pinchable({ children }: any) {
         curve.points[1].copy(handle.position)
       }
       */
-    }
+    
 
     // Released
     if (prev_craftPinching && !craftPinching) {
@@ -306,9 +339,10 @@ function Pinchable({ children }: any) {
     }
 
   //spell casting commands
-  if (index1 && thumb1) {
-    const castPinch = Math.max(0, 1 - index1.position.distanceTo(thumb1.position) / 0.1)
-    castPinching = castPinch > 0.82
+    const castThumbtips = Math.max(0, 1 - thumb0.position.distanceTo(thumb1.position) / 0.1)
+    castPinching = castThumbtips > 0.52
+    const castIndextips = Math.max(0, 1 - index0.position.distanceTo(index1.position) / 0.1)
+    castPinching = castPinching && (castIndextips > 0.52)
     //we set casting to true, but we do not require pinch to continue casting
     if(castPinching && !casting && !crafting){
       console.log('casting spell...')
@@ -332,8 +366,8 @@ function Pinchable({ children }: any) {
     prev_craftPinching = craftPinching
   })
 
-  return (
-    <>
+/* //previous contents of return; will this kill the hand model?
+ 
       <Sphere args={[0.01]} position={start} />
       <Sphere args={[0.01]} position={end} />
       <RoundedBox args={[0.03, 0.08, 0.08]} radius={0.01} ref={ref} position={[0, 1.2, -0.3]}>
@@ -358,6 +392,16 @@ function Pinchable({ children }: any) {
         <mesh><Sphere args={[0.01]} position={start} /></mesh>
       </CurveModifier>
 
+
+ */
+
+  return (
+    <>
+    <mesh ref={ref}>
+      <mesh ref={dustRef}>
+        <Swarm count={5000} />
+      </mesh>
+    </mesh>
     </>
   )
 }

@@ -1,0 +1,32 @@
+{
+  "name": "optomancy",
+  "version": "1.0.0",
+  "description": "A grammar of graphics of immersive visualization and interactions",
+  "type": "module",
+  "source": "src/optomancy.ts",
+  "module": "./dist/optomancy.module.js",
+  "types": "./dist/optomancy.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "microbundle",
+    "dev": "microbundle watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wizualization/optomancy.git"
+  },
+  "author": "Peter Butcher <pbutcher93@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Wizualization/optomancy/issues"
+  },
+  "homepage": "https://github.com/Wizualization/optomancy#readme",
+  "dependencies": {
+    "d3": "^7.4.0",
+    "microbundle": "^0.14.2",
+    "typescript": "^4.6.3"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.1.0"
+  }
+}

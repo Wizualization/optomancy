@@ -129,4 +129,20 @@ export class Optomancy {
   _handleSpell = handleSpell;
 }
 
+// Config creation interface types
+export type { Root } from './types/';
+export * as Workspace from './types/Workspace';
+export * as Data from './types/Data';
+export * as View from './types/View';
+export * as Layer from './types/Layer';
+export * as Axis from './types/Axis';
+export * as Channel from './types/Channel';
+export * as Encoding from './types/Encoding';
+export * as Legend from './types/Legend';
+export * as Mark from './types/Mark';
+export * as Scale from './types/Scale';
+export * as Tooltip from './types/Tooltip';
+export * as Transform from './types/Transform';
+
+
 export default Optomancy;

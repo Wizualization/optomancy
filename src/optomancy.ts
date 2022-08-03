@@ -26,7 +26,6 @@
 // NOTE: GETTERS AND SETTERS
 // - We do not use getters and setters, because that prevents us from calling them from external files
 
-import * as d3 from "d3";
 import { parseConfig, parseDataset } from "./lib";
 import {
   cast,

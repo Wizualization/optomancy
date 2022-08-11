@@ -4,4 +4,5 @@
 export type Data = {
     values?: any[]; // REQUIRED if not using url
     url?: string;
+    name: string;
 }

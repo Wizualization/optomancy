@@ -1,0 +1,12 @@
+{
+  "$schema": "optomancy-schema-v1.0.json",
+  "title": "test",
+  "data": { "url": "test" },
+  "views": [
+    {
+      "mark": "point",
+      "encoding": {
+      }
+    }
+  ]
+}

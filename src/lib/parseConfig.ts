@@ -1,4 +1,4 @@
-import { parseDataset } from ".";
+import parseDataset from "./parseDataset";
 import { OptomancyConfigType } from "../optomancy";
 
 const defaultConfig = {

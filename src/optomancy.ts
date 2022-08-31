@@ -26,7 +26,9 @@
 // NOTE: GETTERS AND SETTERS
 // - We do not use getters and setters, because that prevents us from calling them from external files
 
-import { parseConfig, parseDataset } from "./lib";
+// import { parseConfig, parseDataset } from "./lib";
+import { parseConfig } from "./grammar";
+import { IParsedConfig } from "./grammar/parseConfig";
 import {
   cast,
   handleSpell,
@@ -36,6 +38,7 @@ import {
   clearCastList,
   data,
 } from "./methods";
+import { ConfigType, RootType } from "./types";
 
 // The resulting spell object shape for:
 // - Spell handler
@@ -89,60 +92,73 @@ export type OptomancyExportPropsType = {
 };
 
 // Grammar of Graphics for Wizualization
-export class Optomancy {
-  config: OptomancyConfigType;
-  propsExport: OptomancyExportPropsType = {};
+// export class Optomancy {
+//   // config: OptomancyConfigType;
+//   propsExport: OptomancyExportPropsType = {};
 
-  constructor(config: OptomancyConfigType) {
-    console.log("*_.-'Optomancy Started'-._*");
+//   constructor(config: OptomancyConfigType) {
+//     console.log("*_.-'Optomancy Started'-._*");
 
-    // TODO: Implement config parser
-    // - Takes a config and populates it with defaults
-    // - Removes need to have optional properties in type
-    this.config = parseConfig(config);
+//     // TODO: Implement config parser
+//     // - Takes a config and populates it with defaults
+//     // - Removes need to have optional properties in type
+//     // this.config = parseConfig(config);
+//   }
+
+//   // Sets the dataset
+//   public data = data;
+
+//   // *_.-' Spell Casting '-._*
+
+//   // Get the list of casted spells
+//   public getCastList = getCastList;
+
+//   // Manually set a list of casted spells
+//   // - Must use full spell type object array definition
+//   public setCastList = setCastList;
+
+//   // Cast a spell or spells
+//   // - Each spell definition has a spell type (string) and an optional an array of operands
+//   // - Multiple spells can be cast at once using an array of spell types and an array of operands
+//   public cast = cast;
+
+//   // Undo the last casted spell
+//   public unCast = unCast;
+
+//   // Clear the list of casted spells
+//   public clearCastList = clearCastList;
+
+//   // Handle a cast spell
+//   _handleSpell = handleSpell;
+// }
+
+export class OptomancyV2 {
+  config: ConfigType;
+  parsedConfig: IParsedConfig;
+
+  constructor(config: ConfigType) {
+    console.log("*_.-'Optomancy V2 Started'-._*");
+    this.config = config;
+    this.parsedConfig = parseConfig(this.config);
+
+    console.log("optomancy -> parsedConfig", this.parsedConfig);
   }
-
-  // Sets the dataset
-  public data = data;
-
-  // *_.-' Spell Casting '-._*
-
-  // Get the list of casted spells
-  public getCastList = getCastList;
-
-  // Manually set a list of casted spells
-  // - Must use full spell type object array definition
-  public setCastList = setCastList;
-
-  // Cast a spell or spells
-  // - Each spell definition has a spell type (string) and an optional an array of operands
-  // - Multiple spells can be cast at once using an array of spell types and an array of operands
-  public cast = cast;
-
-  // Undo the last casted spell
-  public unCast = unCast;
-
-  // Clear the list of casted spells
-  public clearCastList = clearCastList;
-
-  // Handle a cast spell
-  _handleSpell = handleSpell;
 }
 
-// Config creation interface types
-export type { Root } from './types/';
-export * as Workspace from './types/Workspace';
-export * as Data from './types/Data';
-export * as View from './types/View';
-export * as Layer from './types/Layer';
-export * as Axis from './types/Axis';
-export * as Channel from './types/Channel';
-export * as Encoding from './types/Encoding';
-export * as Legend from './types/Legend';
-export * as Mark from './types/Mark';
-export * as Scale from './types/Scale';
-export * as Tooltip from './types/Tooltip';
-export * as Transform from './types/Transform';
+// Config creation interfaces
+export * as Config from "./types/ConfigType";
+export * as Root from "./types/RootType";
+export * as Workspace from "./types/WorkspaceType";
+export * as Data from "./types/DataType";
+export * as View from "./types/ViewType";
+export * as Layer from "./types/LayerType";
+export * as Axis from "./types/AxisType";
+export * as Channel from "./types/ChannelType";
+export * as Encoding from "./types/EncodingType";
+export * as Legend from "./types/LegendType";
+export * as Mark from "./types/MarkType";
+export * as Scale from "./types/ScaleType";
+export * as Tooltip from "./types/TooltipType";
+export * as Transform from "./types/TransformType";
 
-
-export default Optomancy;
+// export default Optomancy;

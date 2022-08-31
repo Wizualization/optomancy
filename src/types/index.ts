@@ -1,16 +1,16 @@
-// index.ts
+// types/index.ts
 
-export * as Root from './Root';
-export * as Workspace from './Workspace';
-export * as Data from './Data';
-export * as View from './View';
-export * as Layer from './Layer';
-export * as Axis from './Axis';
-export * as Channel from './Channel';
-export * as Encoding from './Encoding';
-export * as Legend from './Legend';
-export * as Mark from './Mark';
-export * as Scale from './Scale';
-export * as Tooltip from './Tooltip';
-export * as Transform from './Transform';
-
+export type { default as ConfigType } from "./ConfigType";
+export type { default as RootType } from "./RootType";
+export type { default as WorkspaceType } from "./WorkspaceType";
+export type { default as DataType } from "./DataType";
+export type { default as ViewType } from "./ViewType";
+export type { default as LayerType } from "./LayerType";
+export type { default as AxisType } from "./AxisType";
+export type { default as ChannelType } from "./ChannelType";
+export type { default as EncodingType } from "./EncodingType";
+export type { default as LegendType } from "./LegendType";
+export type { default as MarkType } from "./MarkType";
+export type { default as ScaleType } from "./ScaleType";
+export type { default as TooltipType } from "./TooltipType";
+export type { default as TransformType } from "./TransformType";

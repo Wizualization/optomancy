@@ -14,7 +14,7 @@
 // - - Remaining: Legend
 // - Support layers
 
-import cloneDeep from "lodash/cloneDeep";
+import { cloneDeep } from "lodash";
 import * as d3 from "d3";
 import { isRootType, isWorkspaceType } from "../typeGuards";
 import { ConfigType, RootType, TooltipType } from "../types";

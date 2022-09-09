@@ -6,7 +6,7 @@
 // TODO:
 // - Perform dataset transforms here and return transformed datasets object
 
-import cloneDeep from "lodash/cloneDeep";
+import { cloneDeep } from "lodash";
 import { ConfigType } from "../types";
 import { IDatasets } from "./parseDatasets";
 

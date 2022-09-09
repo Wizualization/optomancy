@@ -1,11 +1,14 @@
+import DomainType from "./DomainType";
+import RangeType from "./RangeType";
+
 interface ScaleType {
-  domain?: number[] | string[]; // defaults [0, max]
-  range?: number[] | string[] | string;
-  scheme?: string;
+  domain?: DomainType; // defaults [0, max]
+  range?: RangeType;
+  scheme?: string | string[];
   nice?: boolean;
   zero?: boolean;
-  paddinginner?: number;
-  paddingouter?: number;
+  paddingInner?: number;
+  paddingOuter?: number;
 }
 
 export default ScaleType;

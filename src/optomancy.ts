@@ -29,6 +29,7 @@
 // import { parseConfig, parseDataset } from "./lib";
 import { parseConfig } from "./grammar";
 import { IParsedConfig } from "./grammar/parseConfig";
+import { IDatasets } from "./grammar/parseDatasets";
 import {
   cast,
   handleSpell,
@@ -38,7 +39,7 @@ import {
   clearCastList,
   data,
 } from "./methods";
-import { ConfigType, RootType } from "./types";
+import { ConfigType, RootType, ScalesType } from "./types";
 
 // The resulting spell object shape for:
 // - Spell handler
@@ -133,15 +134,18 @@ export type OptomancyExportPropsType = {
 // }
 
 export class OptomancyV2 {
-  config: ConfigType;
-  parsedConfig: IParsedConfig;
+  userConfig: ConfigType;
+  datasets: IDatasets;
+  config: RootType;
+  scales: ScalesType;
 
-  constructor(config: ConfigType) {
-    console.log("*_.-'Optomancy V2 Started'-._*");
+  constructor(userConfig: ConfigType) {
+    console.log("\n*_.-'Optomancy V2 Started'-._*\n\n");
+    this.userConfig = userConfig;
+    const { datasets, config, scales } = parseConfig(this.userConfig);
+    this.datasets = datasets;
     this.config = config;
-    this.parsedConfig = parseConfig(this.config);
-
-    console.log("optomancy -> parsedConfig", this.parsedConfig);
+    this.scales = scales;
   }
 }
 

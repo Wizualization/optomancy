@@ -5,7 +5,7 @@ import LegendType from "./LegendType";
 interface ChannelType {
   field?: string; // REQUIRED if value not specified
   type?: string; // REQUIRED if value not specified
-  value?: number; // REQUIRED if field+type not specified
+  value?: number | string; // REQUIRED if field+type not specified
   timeUnit?: string; // REQUIRED if using temporal field type
   numberFormat?: string;
   scale?: ScaleType;

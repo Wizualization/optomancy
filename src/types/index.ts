@@ -12,5 +12,8 @@ export type { default as EncodingType } from "./EncodingType";
 export type { default as LegendType } from "./LegendType";
 export type { default as MarkType } from "./MarkType";
 export type { default as ScaleType } from "./ScaleType";
+export type { default as ScalesType } from "./ScalesType";
+export type { default as RangeType } from "./RangeType";
+export type { default as DomainType } from "./DomainType";
 export type { default as TooltipType } from "./TooltipType";
 export type { default as TransformType } from "./TransformType";

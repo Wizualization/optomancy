@@ -19,6 +19,9 @@
       },
       "point": {
         "shape": "sphere"
+      },
+      "line": {
+        "line": "line"
       }
     },
     "tooltip": {

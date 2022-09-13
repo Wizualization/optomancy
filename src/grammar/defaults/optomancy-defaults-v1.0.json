@@ -45,7 +45,7 @@
   "scheme": {
     "ramp": "interpolateBlues",
     "ordinal": "schemeBlues",
-    "category": "schemeSet1"
+    "category": "schemeTableau10"
   },
   "scale": {
     "nice": true,

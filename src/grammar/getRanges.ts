@@ -1,5 +1,5 @@
 import { defaults } from "./defaults";
-import { EncodingType, RangeType, ViewType } from "../types";
+import { ColorRangeType, EncodingType, RangeType, ViewType } from "../types";
 
 export interface IRanges {
   [string: string]: RangeType;
@@ -9,17 +9,17 @@ export interface IRanges {
  * @name getRanges
  * @description Get the ranges of each encoding channel from each view
  * @param view Calculate range for each encoding channel in this view
- * @return {object | array} Range object (or range object array)
+ * @return {array} Range array
  */
-const getRanges = (view: ViewType): IRanges | IRanges[] => {
+const getRanges = (view: ViewType): IRanges[] => {
+  const viewRanges: IRanges[] = [];
   if (view?.encoding !== undefined) {
     // This view doesn't have any layers so only has a single encoding object
-    return _getRangesFromEncoding(view.encoding);
-  } else if (view?.layer !== undefined) {
+    viewRanges.push(_getRangesFromEncoding(view.encoding));
+  } else if (view?.layers !== undefined) {
     // This view has layers, like onions, and ogres.
     // It has multiple encoding objects, one per layer, up to n layers.
-    const viewRanges: IRanges[] = [];
-    view.layer.forEach((layer) => {
+    view.layers.forEach((layer) => {
       viewRanges.push(_getRangesFromEncoding(layer.encoding));
     });
     return viewRanges;
@@ -28,6 +28,7 @@ const getRanges = (view: ViewType): IRanges | IRanges[] => {
     // Encoding is undefined
     return [];
   }
+  return viewRanges;
 
   /**
    * @name _getRangesFromEncoding
@@ -36,15 +37,17 @@ const getRanges = (view: ViewType): IRanges | IRanges[] => {
    * @returns An range object or range object array
    */
   function _getRangesFromEncoding(encoding: EncodingType): IRanges {
-    const ranges = {};
+    const ranges: IRanges = {};
 
-    Object.keys(encoding).forEach((channel) => {
+    let channel: keyof EncodingType;
+    for (channel in encoding) {
+      // Object.keys(encoding).forEach((channel) => {
       let range: RangeType = [];
 
       // If a range is specified...
-      if (encoding[channel].scale?.range) {
+      if (encoding[channel]!.scale?.range) {
         // ...use this range
-        range = encoding[channel].scale.range;
+        range = encoding[channel]!.scale!.range!;
       } else {
         // If the range is not specified, do a lookup
         switch (channel) {
@@ -70,7 +73,12 @@ const getRanges = (view: ViewType): IRanges | IRanges[] => {
             range = defaults.range.length;
             break;
           case "color":
-            range = defaults.range.color[encoding[channel]!.type!];
+            // FIXME:
+            range =
+              defaults.range.color[
+                encoding[channel]!.type! as keyof ColorRangeType
+              ];
+            // range = defaults.range.color.quantitative;
             break;
           case "shape":
             range = defaults.range.shape;
@@ -92,7 +100,8 @@ const getRanges = (view: ViewType): IRanges | IRanges[] => {
         }
         ranges[channel] = range;
       }
-    });
+    }
+
     return ranges;
   }
 };

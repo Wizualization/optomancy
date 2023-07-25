@@ -9,7 +9,7 @@ interface ChannelType {
   timeUnit?: string; // REQUIRED if using temporal field type
   numberFormat?: string;
   scale?: ScaleType;
-  axis?: AxisType;
+  axis?: AxisType | boolean;
   legend?: LegendType;
 }
 

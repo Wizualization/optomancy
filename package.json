@@ -7,7 +7,6 @@
   "module": "./dist/optomancy.module.js",
   "types": "./dist/optomancy.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "microbundle",
     "dev": "microbundle watch"
   },

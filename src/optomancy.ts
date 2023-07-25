@@ -1,15 +1,18 @@
 import { parseConfig } from "./grammar";
 import { IDatasets } from "./grammar/parseDatasets";
 import { ConfigType, RootType, ScalesType } from "./types";
+import * as d3 from "d3";
 
-export class OptomancyV2 {
+export class Optomancy {
   userConfig: ConfigType;
   datasets: IDatasets;
   config: RootType;
   scales: ScalesType;
 
   constructor(userConfig: ConfigType) {
-    console.log("\n*_.-'Optomancy V2 Started'-._*\n\n");
+    window.d3 = d3;
+    console.log("\n*_.-'Optomancy Started'-._*\n\n");
+    console.log(`Started at: ${new Date()}`);
     this.userConfig = userConfig;
     const { datasets, config, scales } = parseConfig(this.userConfig);
     this.datasets = datasets;
@@ -18,7 +21,7 @@ export class OptomancyV2 {
   }
 }
 
-// Config creation interfaces
+// Optomancy Config Types
 export * as Config from "./types/ConfigType";
 export * as Root from "./types/RootType";
 export * as Workspace from "./types/WorkspaceType";

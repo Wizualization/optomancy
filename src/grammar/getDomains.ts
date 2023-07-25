@@ -16,11 +16,11 @@ const getDomains = (view: ViewType, dataset: any[]): IDomains | IDomains[] => {
   if (view?.encoding !== undefined) {
     // This view doesn't have any layers so only has a single encoding object
     return _getDomainsFromEncoding(view.encoding, dataset);
-  } else if (view?.layer !== undefined) {
+  } else if (view?.layers !== undefined) {
     // This view has layers, like onions, and ogres.
     // It has multiple encoding objects, one per layer, up to n layers.
     const viewDomains: IDomains[] = [];
-    view.layer.forEach((layer) => {
+    view.layers.forEach((layer) => {
       viewDomains.push(_getDomainsFromEncoding(layer.encoding, dataset));
     });
     return viewDomains;
@@ -58,11 +58,27 @@ const getDomains = (view: ViewType, dataset: any[]): IDomains | IDomains[] => {
         switch (encoding[channel].type) {
           case "quantitative":
             // Should the domain start from zero?
-            if (encoding[channel].scale?.zero === true) {
-              domain = [0, d3.max(values)];
+            // Check upper and lower bounds, then scale.zero
+            const extent = d3.extent(values);
+
+            if (extent[0] > 0) {
+              // Domain lower bound greater than zero
+              if (encoding[channel].scale?.zero === true) {
+                domain = [0, d3.max(values)];
+              } else {
+                domain = [...extent];
+              }
+            } else if (extent[1] < 0) {
+              // Domain upper bound less than zero
+              if (encoding[channel].scale?.zero === true) {
+                domain = [d3.max(values), 0];
+              } else {
+                domain = [...extent];
+              }
             } else {
-              domain = [...d3.extent(values)];
+              domain = [...extent];
             }
+
             break;
           case "temporal":
           case "nominal":

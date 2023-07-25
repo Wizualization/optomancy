@@ -43,11 +43,11 @@ const createScales = (
   if (view?.encoding !== undefined) {
     // This view doesn't have any layers so only has a single encoding object
     return _createScalesFromEncoding(view.encoding);
-  } else if (view?.layer !== undefined) {
+  } else if (view?.layers !== undefined) {
     // This view has layers, like onions, and ogres.
     // It has multiple encoding objects, one per layer, up to n layers.
     const viewScales: IScales[] = [];
-    view.layer.forEach((layer) => {
+    view.layers.forEach((layer) => {
       viewScales.push(_createScalesFromEncoding(layer.encoding));
     });
     return viewScales;
@@ -106,6 +106,14 @@ const createScales = (
               // All other quantitative channels
               default:
                 // Default scale
+                console.log(
+                  "ranges-channel",
+                  ranges[channel],
+                  "channel",
+                  channel,
+                  "ranges",
+                  ranges
+                );
                 scale = d3
                   .scaleLinear()
                   .domain(domains[channel])

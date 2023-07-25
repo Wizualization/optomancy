@@ -1,7 +1,7 @@
 import ChannelType from "./ChannelType";
 
 interface EncodingType {
-  //AT LEAST ONE REQUIRED
+  // At least one required
   x?: ChannelType;
   y?: ChannelType;
   z?: ChannelType;

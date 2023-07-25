@@ -9,7 +9,7 @@ interface ViewType {
   titlePadding?: number;
   data?: DataType | string; // REQUIRED if not using workspace
   transform?: TransformType[];
-  layer?: LayerType[]; // REQUIRED if not using mark + encoding
+  layers?: LayerType[]; // REQUIRED if not using mark + encoding
   mark?: MarkType | string; // REQUIRED if not using layers
   encoding?: EncodingType; // REQUIRED if not using layers
   width?: number;

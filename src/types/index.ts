@@ -17,3 +17,4 @@ export type { default as RangeType } from "./RangeType";
 export type { default as DomainType } from "./DomainType";
 export type { default as TooltipType } from "./TooltipType";
 export type { default as TransformType } from "./TransformType";
+export type { default as ColorRangeType } from "./ColorRangeType";

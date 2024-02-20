@@ -106,14 +106,6 @@ const createScales = (
               // All other quantitative channels
               default:
                 // Default scale
-                console.log(
-                  "ranges-channel",
-                  ranges[channel],
-                  "channel",
-                  channel,
-                  "ranges",
-                  ranges
-                );
                 scale = d3
                   .scaleLinear()
                   .domain(domains[channel])

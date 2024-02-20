@@ -85,7 +85,7 @@ const getDomains = (view: ViewType, dataset: any[]): IDomains | IDomains[] => {
           case "ordinal":
           default:
             // Reduce the dataset to a unique set of values
-            // Hey! y u no spread?
+            // No spreading?
             // - See: https://stackoverflow.com/a/20070691
             //   and: https://github.com/Microsoft/TypeScript/issues/8856
             domain = Array.from(new Set(values));

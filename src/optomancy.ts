@@ -1,4 +1,5 @@
 import { parseConfig } from "./grammar";
+import { IParsedConfig } from "./grammar/parseConfig";
 import { IDatasets } from "./grammar/parseDatasets";
 import { ConfigType, RootType, ScalesType } from "./types";
 import * as d3 from "d3";
@@ -8,6 +9,8 @@ export class Optomancy {
   datasets: IDatasets;
   config: RootType;
   scales: ScalesType;
+  // TODO: Check this ---------------------vvvvvvvvvvvvv
+  parseConfig: (userConfig: ConfigType) => IParsedConfig;
 
   constructor(userConfig: ConfigType) {
     window.d3 = d3;
@@ -18,6 +21,7 @@ export class Optomancy {
     this.datasets = datasets;
     this.config = config;
     this.scales = scales;
+    this.parseConfig = parseConfig;
   }
 }
 
